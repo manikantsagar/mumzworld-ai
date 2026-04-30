@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "text": "The product arrived completely damaged. The box was crushed and the item inside is broken. I want a full refund.",
+    "expected_category": "refund",
+    "expected_language": "en",
+    "difficulty": "easy",
+    "note": "Clear refund signal, unambiguous."
+  },
+  {
+    "id": 2,
+    "text": "I ordered size M but my daughter needs size L. Can I exchange it for the right size?",
+    "expected_category": "exchange",
+    "expected_language": "en",
+    "difficulty": "easy",
+    "note": "Explicit exchange request."
+  },
+  {
+    "id": 3,
+    "text": "I don't need this right now but I'll use the credit for my next order. Store credit is fine.",
+    "expected_category": "store_credit",
+    "expected_language": "en",
+    "difficulty": "easy",
+    "note": "Explicitly mentions store credit."
+  },
+  {
+    "id": 4,
+    "text": "My baby got sick after using this formula and I'm taking you to court. This is criminal negligence!",
+    "expected_category": "escalate",
+    "expected_language": "en",
+    "difficulty": "easy",
+    "note": "Health emergency + legal threat = must escalate."
+  },
+  {
+    "id": 5,
+    "text": "وصل المنتج تالفاً تماماً وأريد استرداد المبلغ المدفوع فوراً",
+    "expected_category": "refund",
+    "expected_language": "ar",
+    "difficulty": "easy",
+    "note": "Arabic: damaged product, wants full refund."
+  },
+  {
+    "id": 6,
+    "text": "طلبت مقاس صغير بس احتاج كبير، ممكن تبديل؟",
+    "expected_category": "exchange",
+    "expected_language": "ar",
+    "difficulty": "easy",
+    "note": "Arabic: wrong size, wants exchange."
+  },
+  {
+    "id": 7,
+    "text": "ما أعجبني المنتج، أفضل رصيد للشراء القادم",
+    "expected_category": "store_credit",
+    "expected_language": "ar",
+    "difficulty": "easy",
+    "note": "Arabic: doesn't like it, prefers store credit."
+  },
+  {
+    "id": 8,
+    "text": "تاريخ الصلاحية منتهي! طفلي أكل منه وأصبح مريضاً. هذا خطر على الصحة!",
+    "expected_category": "escalate",
+    "expected_language": "ar",
+    "difficulty": "easy",
+    "note": "Arabic: expired product, sick child = health emergency, must escalate."
+  },
+  {
+    "id": 9,
+    "text": "I just don't like it.",
+    "expected_category": "refund",
+    "expected_language": "en",
+    "difficulty": "ambiguous",
+    "note": "Vague dissatisfaction — refund is most likely but model should show low confidence."
+  },
+  {
+    "id": 10,
+    "text": "I ordered 3 items but only 2 arrived. The missing one was the most important.",
+    "expected_category": "escalate",
+    "expected_language": "en",
+    "difficulty": "medium",
+    "note": "Partial order needs investigation — cannot auto-resolve."
+  },
+  {
+    "id": 11,
+    "text": "Actually I changed my mind, I want to keep it. Never mind the return.",
+    "expected_category": "escalate",
+    "expected_language": "en",
+    "difficulty": "adversarial",
+    "note": "No return intent — model must not fabricate a category."
+  },
+  {
+    "id": 12,
+    "text": "اشتريت هذا الشامبو وكتب عليه حلال بس لما فحصته مو حلال. هذا غش وسأبلغ الجهات المختصة.",
+    "expected_category": "escalate",
+    "expected_language": "ar",
+    "difficulty": "medium",
+    "note": "Arabic: fraud allegation (fake halal) + regulatory threat."
+  },
+  {
+    "id": 13,
+    "text": "😡😡😡 terrible!!!",
+    "expected_category": "escalate",
+    "expected_language": "en",
+    "difficulty": "adversarial",
+    "note": "Near-empty, emoji-only. Model must flag uncertainty and not confidently classify."
+  },
+  {
+    "id": 14,
+    "text": "The colour is slightly different from the website photo. I'd take an exchange or even store credit, either works for me.",
+    "expected_category": "exchange",
+    "expected_language": "en",
+    "difficulty": "medium",
+    "note": "Mentions both exchange and store_credit — exchange is primary since it's listed first and is the more specific remedy."
+  },
+  {
+    "id": 15,
+    "text": "This is a gift for my sister but she already has one. Can I get a different product instead?",
+    "expected_category": "exchange",
+    "expected_language": "en",
+    "difficulty": "medium",
+    "note": "Wants a different product — maps to exchange."
+  }
+]

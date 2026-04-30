@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mumzworld · Return Classifier</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #faf8f6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 36px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #c0006e;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: #2d2d2d; }
+
+    header p {
+      font-size: 14px;
+      color: #888;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      border: 1.5px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #1a1a1a;
+      resize: vertical;
+      min-height: 110px;
+      transition: border-color 0.15s;
+      font-family: inherit;
+      background: #fefefe;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #c0006e;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 6px;
+    }
+
+    .samples {
+      margin: 12px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sample-btn {
+      font-size: 12px;
+      padding: 5px 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 999px;
+      background: #fff;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sample-btn:hover { border-color: #c0006e; color: #c0006e; }
+
+    button.classify-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background: #c0006e;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    button.classify-btn:hover { background: #a8005e; }
+    button.classify-btn:disabled { background: #e0a0c0; cursor: not-allowed; }
+
+    .result {
+      margin-top: 24px;
+      display: none;
+    }
+
+    .result.visible { display: block; }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    .badge-refund        { background: #fff0f5; color: #c0006e; }
+    .badge-exchange      { background: #f0f4ff; color: #1a5ce6; }
+    .badge-store_credit  { background: #f0fff5; color: #1a8c4e; }
+    .badge-escalate      { background: #fff8f0; color: #d45d00; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .meta-box {
+      background: #faf8f6;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; margin-bottom: 4px; }
+    .meta-value { font-size: 14px; font-weight: 600; color: #2d2d2d; }
+
+    .confidence-bar {
+      height: 6px;
+      background: #e8e8e8;
+      border-radius: 3px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    .fill-refund       { background: #c0006e; }
+    .fill-exchange     { background: #1a5ce6; }
+    .fill-store_credit { background: #1a8c4e; }
+    .fill-escalate     { background: #d45d00; }
+
+    .reasoning-box {
+      background: #faf8f6;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .reasoning-box .meta-label { margin-bottom: 8px; }
+
+    .reasoning-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    /* RTL support for Arabic reasoning */
+    .reasoning-text[dir="rtl"] {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      font-size: 15px;
+    }
+
+    .hint-box {
+      border-left: 3px solid #c0006e;
+      padding: 10px 14px;
+      background: #fff8fb;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .uncertainty-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff8f0;
+      border: 1px solid #f0c090;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #a05000;
+      margin-bottom: 12px;
+    }
+
+    .error-box {
+      background: #fff0f0;
+      border: 1px solid #f0c0c0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #c00;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">mumz<span>world</span></div>
+  <p>Return Reason Classifier · Internal CS Tool</p>
+</header>
+
+<div class="card">
+  <label for="reason">Customer return reason</label>
+  <textarea id="reason" placeholder="Type or paste the customer's return reason in English or Arabic…"></textarea>
+  <p class="hint">Supports English and Arabic. Up to 2000 characters.</p>
+
+  <div class="samples">
+    <span style="font-size:12px;color:#aaa;align-self:center;margin-right:2px;">Try:</span>
+    <button class="sample-btn" onclick="fill('The product arrived damaged. I want a full refund.')">Damaged → refund</button>
+    <button class="sample-btn" onclick="fill('I ordered size M but need size L. Can I exchange it?')">Wrong size → exchange</button>
+    <button class="sample-btn" onclick="fill('I don\'t need it now, store credit is fine.')">Store credit</button>
+    <button class="sample-btn" onclick="fill('My baby got sick after using this formula. I\'m contacting the health authority!')">Health 🚨 escalate</button>
+    <button class="sample-btn" onclick="fill('وصل المنتج تالفاً وأريد استرداد المبلغ فوراً')">Arabic refund</button>
+    <button class="sample-btn" onclick="fill('😡😡😡 terrible!!!')">Adversarial</button>
+  </div>
+
+  <button class="classify-btn" onclick="classify()" id="btn">Classify Return Reason</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  const LABEL = {
+    refund: "💳 Refund",
+    exchange: "🔄 Exchange",
+    store_credit: "🎁 Store Credit",
+    escalate: "🚨 Escalate",
+  };
+
+  function fill(text) {
+    document.getElementById("reason").value = text;
+    document.getElementById("result").className = "result";
+  }
+
+  async function classify() {
+    const text = document.getElementById("reason").value.trim();
+    if (!text) return;
+
+    const btn = document.getElementById("btn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Classifying…';
+
+    const resultEl = document.getElementById("result");
+    resultEl.className = "result";
+    resultEl.innerHTML = "";
+
+    try {
+      const res = await fetch("/classify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const data = await res.json();
+
+      if (!data.validation_passed) {
+        resultEl.innerHTML = `<div class="error-box">⚠️ <strong>Validation failed.</strong><br>${data.error}</div>`;
+      } else {
+        const r = data.result;
+        const conf = Math.round(r.confidence * 100);
+        const isAr = r.language_detected === "ar";
+        const reasoningDir = isAr ? "rtl" : "ltr";
+
+        resultEl.innerHTML = `
+          <div class="category-badge badge-${r.category}">${LABEL[r.category]}</div>
+          ${r.uncertainty_flag ? `<div class="uncertainty-banner">⚠️ Uncertain — recommend human review before acting.</div>` : ""}
+          <div class="meta-grid">
+            <div class="meta-box">
+              <div class="meta-label">Confidence</div>
+              <div class="meta-value">${conf}%</div>
+              <div class="confidence-bar"><div class="confidence-fill fill-${r.category}" style="width:${conf}%"></div></div>
+            </div>
+            <div class="meta-box">
+              <div class="meta-label">Language detected</div>
+              <div class="meta-value">${r.language_detected === "ar" ? "🇸🇦 Arabic" : "🇬🇧 English"}</div>
+            </div>
+          </div>
+          <div class="reasoning-box">
+            <div class="meta-label">Reasoning</div>
+            <div class="reasoning-text" dir="${reasoningDir}">${r.reasoning}</div>
+          </div>
+          <div class="hint-box">
+            <strong>CS hint:</strong> ${r.suggested_response_hint}
+          </div>
+        `;
+      }
+
+      resultEl.className = "result visible";
+    } catch (err) {
+      resultEl.innerHTML = `<div class="error-box">⚠️ Network error: ${err.message}</div>`;
+      resultEl.className = "result visible";
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = "Classify Return Reason";
+  }
+
+  // Allow Ctrl+Enter to submit
+  document.getElementById("reason").addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") classify();
+  });
+</script>
+</body>
+</html>
